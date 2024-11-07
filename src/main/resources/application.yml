@@ -1,1 +1,18 @@
-spring.application.name=sns
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: practice
+    password: qwe123!@#
+    url: jdbc:postgresql://localhost:5432/sns
+    hikari:
+      maximum-pool-size: 4
+  jpa:
+    database: postgresql
+    hibernate:
+#      dialect: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
