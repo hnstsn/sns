@@ -57,8 +57,14 @@ public class UserEntity {
 
     public static UserEntity fromUser(String userName, String password) {
         UserEntity userEntity = new UserEntity();
-//        userEntity.setUserName(user.getUserName());
-//        userEntity.setPassword(user.getPassword());
+        userEntity.setUserName(userName);
+        userEntity.setPassword(password);
+        return userEntity;
+    }
+
+    public static UserEntity fromUser(Long userId, String userName, String password) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
         userEntity.setUserName(userName);
         userEntity.setPassword(password);
         return userEntity;

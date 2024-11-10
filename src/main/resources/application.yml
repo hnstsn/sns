@@ -16,3 +16,7 @@ spring:
         format_sql: true
     show-sql: true
 
+jwt:
+  secret-key: Sns-Practice.jwt.token.$ecret-key
+  token:
+    expired-time-ms: 86400000   #1day

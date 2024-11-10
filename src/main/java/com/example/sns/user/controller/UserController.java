@@ -4,6 +4,7 @@ import com.example.sns.user.model.User;
 import com.example.sns.user.model.request.UserJoinRequest;
 import com.example.sns.user.model.request.UserLoginRequest;
 import com.example.sns.user.model.response.UserJoinResponse;
+import com.example.sns.user.model.response.UserLoginResponse;
 import com.example.sns.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,8 +27,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public void login(@RequestBody UserLoginRequest request) {
-        userService.login(request.getUserName(), request.getPassword());
+    public Response<UserLoginResponse> login(@RequestBody UserLoginRequest request) {
+        String token = userService.login(request.getUserName(), request.getPassword());
+        return Response.success(new UserLoginResponse(token));
     }
 
 }
