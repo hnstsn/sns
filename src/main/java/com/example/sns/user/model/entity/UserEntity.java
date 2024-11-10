@@ -1,5 +1,6 @@
 package com.example.sns.user.model.entity;
 
+import com.example.sns.user.model.User;
 import com.example.sns.user.model.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.sql.Timestamp;
 import java.time.Instant;
