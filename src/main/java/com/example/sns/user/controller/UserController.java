@@ -1,5 +1,6 @@
 package com.example.sns.user.controller;
 
+import com.example.sns.model.Response;
 import com.example.sns.user.model.User;
 import com.example.sns.user.model.request.UserJoinRequest;
 import com.example.sns.user.model.request.UserLoginRequest;

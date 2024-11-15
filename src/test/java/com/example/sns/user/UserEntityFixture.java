@@ -5,6 +5,6 @@ import com.example.sns.user.model.entity.UserEntity;
 public class UserEntityFixture {
 
     public static UserEntity get(String userName, String password) {
-        return UserEntity.fromUser(userName, password);
+        return UserEntity.of(userName, password);
     }
 }

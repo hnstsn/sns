@@ -8,6 +8,9 @@ import com.example.sns.user.repository.UserRepository;
 import com.example.sns.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +30,11 @@ public class UserService {
     @Value("${jwt.token.expired-time-ms}")
     private long expiredTimeMs;
 
+    public User loadUserByUsername(String username) {
+        return userRepository.findByUserName(username).map(User::fromUserEntity)
+                .orElseThrow(() -> new SnsException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded.", username)));
+    }
+
 
     @Transactional
     public User join(String userName, String password) {
@@ -38,7 +46,7 @@ public class UserService {
                 );
 
         // 회원가입 진행
-        UserEntity userEntity = userRepository.save(UserEntity.fromUser(userName, passwordEncoder.encode(password)));
+        UserEntity userEntity = userRepository.save(UserEntity.of(userName, passwordEncoder.encode(password)));
         return User.fromUserEntity(userEntity);
     }
 

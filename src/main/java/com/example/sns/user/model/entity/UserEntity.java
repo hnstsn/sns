@@ -1,6 +1,5 @@
 package com.example.sns.user.model.entity;
 
-import com.example.sns.user.model.User;
 import com.example.sns.user.model.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -55,16 +53,8 @@ public class UserEntity {
         this.updatedAt = Timestamp.from(Instant.now());
     }
 
-    public static UserEntity fromUser(String userName, String password) {
+    public static UserEntity of(String userName, String password) {
         UserEntity userEntity = new UserEntity();
-        userEntity.setUserName(userName);
-        userEntity.setPassword(password);
-        return userEntity;
-    }
-
-    public static UserEntity fromUser(Long userId, String userName, String password) {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(userId);
         userEntity.setUserName(userName);
         userEntity.setPassword(password);
         return userEntity;
