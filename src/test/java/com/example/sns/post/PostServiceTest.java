@@ -49,7 +49,7 @@ public class PostServiceTest {
         String content = "content";
         String userName = "userName";
 
-        when(userRepository.findByUserName(userName)).thenReturn(Optional.of(mock(UserEntity.class)));
+        when(userRepository.findByUserName(userName)).thenReturn(Optional.empty());
         when(postRepository.save(any())).thenReturn(mock(PostEntity.class));
 
         SnsException e = Assertions.assertThrows(SnsException.class, () -> postService.create(title, content, userName));
