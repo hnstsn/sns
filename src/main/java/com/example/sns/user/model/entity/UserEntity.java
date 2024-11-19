@@ -59,4 +59,11 @@ public class UserEntity {
         userEntity.setPassword(password);
         return userEntity;
     }
+    public static UserEntity of(String userName, String password, Long userId) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setUserName(userName);
+        userEntity.setPassword(password);
+        return userEntity;
+    }
 }
