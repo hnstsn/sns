@@ -36,7 +36,7 @@ public class UserServiceTest {
 
         when(userRepository.findByUserName(userName)).thenReturn(Optional.empty());
         when(passwordEncoder.encode(password)).thenReturn("encrypt_password");
-        when(userRepository.save(any(UserEntity.class))).thenReturn(UserEntityFixture.get(userName, password));
+        when(userRepository.save(any(UserEntity.class))).thenReturn(UserEntityFixture.get(userName, password, 1L));
 
         userService.join(userName, password);
     }
@@ -46,7 +46,7 @@ public class UserServiceTest {
         String userName = "test1";
         String password = "password";
 
-        UserEntity userFixture = UserEntityFixture.get(userName, password);
+        UserEntity userFixture = UserEntityFixture.get(userName, password, 1L);
 
         when(userRepository.findByUserName(userName)).thenReturn(Optional.of(userFixture));
         when(passwordEncoder.encode(password)).thenReturn("encrypt_password");
@@ -63,7 +63,7 @@ public class UserServiceTest {
         String userName = "test1";
         String password = "password";
 
-        UserEntity userFixture = UserEntityFixture.get(userName, password);
+        UserEntity userFixture = UserEntityFixture.get(userName, password, 1L);
 
         when(userRepository.findByUserName(userName)).thenReturn(Optional.of(userFixture));
         when(passwordEncoder.matches(password, userFixture.getPassword())).thenReturn(true);
@@ -93,7 +93,7 @@ public class UserServiceTest {
         String password = "password";
         String wrongPassword = "wrong";
 
-        UserEntity userEntity = UserEntityFixture.get(userName, password);
+        UserEntity userEntity = UserEntityFixture.get(userName, password, 1L);
 
         when(userRepository.findByUserName(userName)).thenReturn(Optional.of(userEntity));
 

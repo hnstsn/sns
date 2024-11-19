@@ -9,5 +9,5 @@ public class PostModifyRequest {
 
     private String title;
 
-    private String body;
+    private String content;
 }
