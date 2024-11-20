@@ -41,7 +41,7 @@ public class PostControllerTest {
 
     @Test
     @WithMockUser
-    public void 포스트_작성_성공() throws Exception {
+    void 포스트_작성_성공() throws Exception {
         String title = "title";
         String content = "content";
 
@@ -54,7 +54,7 @@ public class PostControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void 포스트작성시_로그인하지않은경우() throws Exception {
+    void 포스트작성시_로그인하지않은경우() throws Exception {
         String title = "title";
         String content = "content";
 
@@ -150,7 +150,7 @@ public class PostControllerTest {
     @WithMockUser
     void 포스트삭제시_작성자와_삭제요청자가_다를경우() throws Exception {
         // mocking
-        doThrow(new SnsApplicationException(ErrorCode.INVALID_PERMISSION)).when(postService).delete(any(), any());
+        doThrow(new SnsException(ErrorCode.INVALID_PERMISSION)).when(postService).delete(any(), any());
 
         mockMvc.perform(delete("/api/posts/1")
                         .contentType(MediaType.APPLICATION_JSON)
