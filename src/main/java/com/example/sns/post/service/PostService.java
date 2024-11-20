@@ -53,6 +53,17 @@ public class PostService {
                 new SnsException(ErrorCode.POST_NOT_FOUND, String.format("%s not founded", postId)));
     }
 
+    @Transactional
+    public void delete(String userName, Long postId) {
+        UserEntity userEntity = getUserEntityOrException(userName);
+        PostEntity postEntity = getPostEntityOrException(postId);
+
+        if (postEntity.getUser() != userEntity) {
+            throw new SnsException(ErrorCode.INVALID_PERMISSION, String.format("%s has no permission with %s", userName, postId));
+        }
+        postRepository.delete(postEntity);
+    }
+
     // user exist
     private UserEntity getUserEntityOrException(String userName) {
         return userRepository.findByUserName(userName).orElseThrow(() ->
