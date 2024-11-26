@@ -5,7 +5,6 @@ import com.example.sns.post.model.entity.PostEntity;
 import com.example.sns.user.model.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface LikeRepository extends JpaRepository<LikeEntity, Long> {

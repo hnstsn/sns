@@ -6,7 +6,6 @@ import com.example.sns.post.model.Post;
 import com.example.sns.post.model.request.PostCreateRequest;
 import com.example.sns.post.model.request.PostModifyRequest;
 import com.example.sns.post.service.PostService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
