@@ -3,7 +3,9 @@ package com.example.sns.post.service;
 import com.example.sns.exception.ErrorCode;
 import com.example.sns.exception.SnsException;
 import com.example.sns.post.model.Post;
+import com.example.sns.post.model.entity.LikeEntity;
 import com.example.sns.post.model.entity.PostEntity;
+import com.example.sns.post.repository.LikeRepository;
 import com.example.sns.post.repository.PostRepository;
 import com.example.sns.user.model.entity.UserEntity;
 import com.example.sns.user.repository.UserRepository;
@@ -20,6 +22,8 @@ public class PostService {
     private final PostRepository postRepository;
 
     private final UserRepository userRepository;
+
+    private final LikeRepository likeRepository;
 
 
     @Transactional
@@ -79,5 +83,27 @@ public class PostService {
     public Page<Post> my(String userName, Pageable pageable) {
         UserEntity userEntity = getUserEntityOrException(userName);
         return postRepository.findAllByUser(userEntity, pageable).map(Post::fromEntity);
+    }
+
+    @Transactional
+    public void like(Long postId, String userName) {
+        // post exist
+        PostEntity postEntity = getPostEntityOrException(postId);
+        UserEntity userEntity = getUserEntityOrException(userName);
+
+        // check liked -> throw
+        likeRepository.findByUserAndPostAndDeletedAtIsNull(userEntity, postEntity).ifPresent(it -> {
+            throw new SnsException(ErrorCode.ALREADY_LIKED, String.format("userName %s already like post %d", userName, postId));
+        });
+
+        // like save
+        likeRepository.save(LikeEntity.of(userEntity, postEntity));
+
+    }
+
+    public long likeCount(Long  postId) {
+        PostEntity postEntity = getPostEntityOrException(postId);
+        // count like
+        return likeRepository.countByPostAndDeletedAtIsNull(postEntity);
     }
 }
