@@ -3,6 +3,7 @@ package com.example.sns.post;
 import com.example.sns.exception.ErrorCode;
 import com.example.sns.exception.SnsException;
 import com.example.sns.post.model.Post;
+import com.example.sns.post.model.request.PostCommentRequest;
 import com.example.sns.post.model.request.PostCreateRequest;
 import com.example.sns.post.model.request.PostModifyRequest;
 import com.example.sns.post.service.PostService;
@@ -243,6 +244,39 @@ public class PostControllerTest {
 
         mockMvc.perform(post("/api/posts/1/likes")
                         .contentType(MediaType.APPLICATION_JSON)
+                ).andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+
+    @Test
+    @WithMockUser
+    void 댓글기능() throws Exception {
+        mockMvc.perform(post("/api/posts/1/comments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new PostCommentRequest("comment")))
+                ).andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 댓글작성시_로그인하지_않은경우() throws Exception {
+        mockMvc.perform(post("/api/posts/1/comments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new PostCommentRequest("comment")))
+                ).andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser
+    void 댓글작성시_게시물이_없는경우() throws Exception {
+        doThrow(new SnsException(ErrorCode.POST_NOT_FOUND)).when(postService).comment(any(), any(), any());
+
+        mockMvc.perform(post("/api/posts/1/comments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new PostCommentRequest("comment")))
                 ).andDo(print())
                 .andExpect(status().isNotFound());
     }

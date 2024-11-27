@@ -2,9 +2,12 @@ package com.example.sns.post.service;
 
 import com.example.sns.exception.ErrorCode;
 import com.example.sns.exception.SnsException;
+import com.example.sns.post.model.Comment;
 import com.example.sns.post.model.Post;
+import com.example.sns.post.model.entity.CommentEntity;
 import com.example.sns.post.model.entity.LikeEntity;
 import com.example.sns.post.model.entity.PostEntity;
+import com.example.sns.post.repository.CommentRepository;
 import com.example.sns.post.repository.LikeRepository;
 import com.example.sns.post.repository.PostRepository;
 import com.example.sns.user.model.entity.UserEntity;
@@ -25,19 +28,19 @@ public class PostService {
 
     private final LikeRepository likeRepository;
 
+    private final CommentRepository commentRepository;
+
 
     @Transactional
     public void create(String title, String content, String userName) {
-        UserEntity userEntity = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new SnsException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded.", userRepository)));
+        UserEntity userEntity = getUserEntityOrException(userName);
 
         postRepository.save(PostEntity.of(title, content, userEntity));
     }
 
     @Transactional
     public Post modify(String title, String content, String userName, Long postId) {
-        UserEntity userEntity = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new SnsException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded.", userRepository)));
+        UserEntity userEntity = getUserEntityOrException(userName);
 
         // post exist
         PostEntity postEntity = getPostEntityOrException(postId);
@@ -53,12 +56,6 @@ public class PostService {
         return Post.fromEntity(postRepository.saveAndFlush(postEntity));
     }
 
-    // post exist
-    private PostEntity getPostEntityOrException(Long postId) {
-        return postRepository.findById(postId).orElseThrow(() ->
-                new SnsException(ErrorCode.POST_NOT_FOUND, String.format("%s not founded", postId)));
-    }
-
     @Transactional
     public void delete(String userName, Long postId) {
         UserEntity userEntity = getUserEntityOrException(userName);
@@ -68,12 +65,6 @@ public class PostService {
             throw new SnsException(ErrorCode.INVALID_PERMISSION, String.format("%s has no permission with %s", userName, postId));
         }
         postRepository.delete(postEntity);
-    }
-
-    // user exist
-    private UserEntity getUserEntityOrException(String userName) {
-        return userRepository.findByUserName(userName).orElseThrow(() ->
-                new SnsException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
     }
 
     public Page<Post> list(Pageable pageable) {
@@ -105,5 +96,33 @@ public class PostService {
         PostEntity postEntity = getPostEntityOrException(postId);
         // count like
         return likeRepository.countByPostAndDeletedAtIsNull(postEntity);
+    }
+
+
+    @Transactional
+    public void comment(Long postId, String userName, String comment) {
+        PostEntity postEntity = getPostEntityOrException(postId);
+        UserEntity userEntity = getUserEntityOrException(userName);
+
+        //comment save
+        commentRepository.save(CommentEntity.of(userEntity, postEntity, comment));
+    }
+
+    public Page<Comment> getComments(Long postId, Pageable pageable) {
+        PostEntity postEntity = getPostEntityOrException(postId);
+        return commentRepository.findAllByPostAndDeletedAtIsNull(postEntity, pageable).map(Comment::fromEntity);
+    }
+
+
+    // post exist
+    private PostEntity getPostEntityOrException(Long postId) {
+        return postRepository.findById(postId).orElseThrow(() ->
+                new SnsException(ErrorCode.POST_NOT_FOUND, String.format("%s not founded", postId)));
+    }
+
+    // user exist
+    private UserEntity getUserEntityOrException(String userName) {
+        return userRepository.findByUserName(userName).orElseThrow(() ->
+                new SnsException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
     }
 }
